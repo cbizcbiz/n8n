@@ -1,0 +1,32 @@
+{
+  "name": "n8n-workflow-execution",
+  "title": "How n8n runs a workflow",
+  "subtitle": "trigger to output, from packages/cli + packages/core",
+  "theme": "dark",
+  "gapX": 110,
+  "nodes": [
+    {"id": "trigger", "label": "Triggers", "color": "green", "row": 1, "col": 0,
+     "body": ["Webhook, Schedule, Poll", "webhooks/live-webhooks.ts", "active-workflow-manager.ts"]},
+    {"id": "runner", "label": "WorkflowRunner", "color": "purple", "row": 1, "col": 1,
+     "body": ["cli/workflow-runner.ts", "run() picks the mode"]},
+    {"id": "queue", "label": "Queue mode", "color": "blue", "row": 0, "col": 2,
+     "body": ["scaling.service.ts", "Bull job on Redis", "worker: job-processor.ts"]},
+    {"id": "main", "label": "Regular mode", "color": "blue", "row": 2, "col": 2,
+     "body": ["runMainProcess()", "same process as the UI"]},
+    {"id": "engine", "label": "WorkflowExecute", "color": "purple", "row": 1, "col": 3,
+     "body": ["core/workflow-execute.ts", "processRunExecutionData()", "walks nodeExecutionStack"]},
+    {"id": "nodes", "label": "Nodes", "color": "blue", "row": 2, "col": 3,
+     "body": ["nodes-base/*.node.ts", "execute() per node"]},
+    {"id": "hooks", "label": "Lifecycle hooks", "color": "orange", "row": 1, "col": 4,
+     "body": ["execution-lifecycle-hooks.ts", "save to DB", "push to editor UI"]}
+  ],
+  "edges": [
+    {"from": "trigger", "to": "runner", "label": "starts"},
+    {"from": "runner", "to": "queue", "label": "enqueues", "style": "dashed"},
+    {"from": "runner", "to": "main", "label": "runs"},
+    {"from": "queue", "to": "engine", "label": "worker runs", "style": "dashed"},
+    {"from": "main", "to": "engine", "label": "runs"},
+    {"from": "engine", "to": "nodes", "label": "executes", "both": true},
+    {"from": "engine", "to": "hooks", "label": "reports"}
+  ]
+}

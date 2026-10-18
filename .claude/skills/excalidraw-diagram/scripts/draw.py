@@ -258,11 +258,22 @@ def build(spec):
             lsize = spec.get("edgeLabelSize", 14)
             lw, lh = text_size(e["label"], lsize, family)
             mx, my = (sx + ex) / 2, (sy + ey) / 2
-            # Vertical arrows: label sits to the right. Otherwise above the line.
-            if abs(ex - sx) < abs(ey - sy):
+            dx, dy = ex - sx, ey - sy
+            if abs(dx) < 1:
+                # Vertical: label sits to the right.
                 lx, ly = mx + 12, my - lh / 2
-            else:
+            elif abs(dy) < 1:
+                # Horizontal: label sits above.
                 lx, ly = mx - lw / 2, my - lh - 8
+            else:
+                # Diagonal: push the label off the line along its upward normal,
+                # far enough that the label box clears the line.
+                ln = math.hypot(dx, dy)
+                nx, ny = -dy / ln, dx / ln
+                if ny > 0:
+                    nx, ny = -nx, -ny
+                d = (abs(nx) * lw + abs(ny) * lh) / 2 + 8
+                lx, ly = mx + nx * d - lw / 2, my + ny * d - lh / 2
             els.append(make_text(e["label"], lx, ly, lsize, family, theme["label"],
                                  roughness=roughness))
 
