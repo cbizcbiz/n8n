@@ -1,0 +1,35 @@
+{
+  "name": "four-cs-second-brain",
+  "title": "The Four Cs of my second brain",
+  "theme": "dark",
+  "style": "sketch",
+  "font": "hand",
+  "nodes": [
+    {
+      "id": "connections", "label": "Connections", "color": "blue", "row": 0, "col": 1,
+      "body": ["tools/query.py", "Gmail, Calendar, Asana", "GitHub, Drive, Slack"]
+    },
+    {
+      "id": "context", "label": "Context", "color": "blue", "row": 1, "col": 0,
+      "body": ["Brain/ Obsidian vault", "SOUL, USER, MEMORY", "Daily logs + entities"]
+    },
+    {
+      "id": "core", "label": "Claude Code", "color": "purple", "row": 1, "col": 1,
+      "body": ["Reads memory", "Picks a skill", "Drafts, never sends"]
+    },
+    {
+      "id": "capabilities", "label": "Capabilities", "color": "blue", "row": 1, "col": 2,
+      "body": [".claude/skills/", "connections", "excalidraw-diagram"]
+    },
+    {
+      "id": "cadence", "label": "Cadence", "color": "green", "row": 2, "col": 1,
+      "body": ["heartbeat.py on cron", "Brief lands in Slack", "and the daily log"]
+    }
+  ],
+  "edges": [
+    {"from": "connections", "to": "core", "label": "live data"},
+    {"from": "context", "to": "core", "label": "loads"},
+    {"from": "core", "to": "capabilities", "label": "uses"},
+    {"from": "cadence", "to": "core", "label": "triggers"}
+  ]
+}
